@@ -8,16 +8,35 @@ function App() {
   
   // Use initialEmails for state
   const [emails, setEmails] = useState(initialEmails);
-  const [hideRead, setHideRead] = useState('')
-  console.log("initial Emails:", initialEmails);
-  console.log(emails)
-  console.log(hideRead)
+  const [hideRead, setHideRead] = useState(false)
+  const [showEmails, setShowEmails] = useState(true)
 
-  const toggleRead = target => {
-    
-    const updatedEmail = emails.map(email => 
-      email === target ? {...email, read: !email.read} : email)
-      setEmails(updatedEmail)
+
+  const displayEmails = (email) => {
+    return (
+      <li className="email" key={email.id}>
+        <div className="select">
+          <input className="select-checkbox" type="checkbox" onChange={() => toggleRead(email)} checked={email.read}/>
+        </div>
+        <div className="star">
+          <input className="star-checkbox" type="checkbox" onChange={() => toggleStarred(email)} checked={email.starred}/>
+        </div>
+        <div className="sender">{email.sender}</div>
+        <div className="title">{email.title}</div>
+      </li>
+    )
+  }
+
+  const getunreadEmails = () => {
+    if (!hideRead) {
+      setShowEmails(false)
+      setHideRead(true)
+    }
+    else {
+      setShowEmails(true)
+      setHideRead(false)
+    }
+  
   }
 
   const toggleStarred = target => {
@@ -27,11 +46,15 @@ function App() {
       setEmails(updatedEmail) 
   }
 
-  const toggleHideRead = () => {
-    const readEmailsCopy = [...emails.filter(email => email.read)]
-    setEmails(readEmailsCopy)
+  const toggleRead = target => {
+    
+    const updatedEmail = emails.map(email => 
+      email === target ? {...email, read: !email.read} : email)
+      setEmails(updatedEmail) 
   }
 
+  const unreadEmails = emails.filter(email => !email.read)
+    
   const countUnread = () => {
     const unreadEmails = emails.filter(email => !email.read)
     return unreadEmails.length
@@ -68,31 +91,15 @@ function App() {
               id="hide-read"
               type="checkbox"
               checked={hideRead}
-              onChange={function(e) {
-                setHideRead(e.target.checked);
-                toggleHideRead();
-              } }
+              onChange={getunreadEmails}
             />
           </li>
         </ul>
       </nav>
       <main className="emails">
         <ul>
-          {emails.map(function (email) {
-             
-            return (
-              <li className="email" key={email.id}>
-                <div className="select">
-                  <input className="select-checkbox" type="checkbox" onChange={() => toggleRead(email)} checked={email.read}/>
-                </div>
-                <div className="star">
-                  <input className="star-checkbox" type="checkbox" onChange={() => toggleStarred(email)} checked={email.starred}/>
-                </div>
-                <div className="sender">{email.sender}</div>
-                <div className="title">{email.title}</div>
-              </li>
-            )
-          })}
+          {showEmails && emails.map((email) => displayEmails(email))}
+          {hideRead && unreadEmails.map((email) => displayEmails(email))}
         </ul>
       </main>
     </div>
