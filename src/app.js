@@ -10,6 +10,7 @@ function App() {
   const [emails, setEmails] = useState(initialEmails);
   const [hideRead, setHideRead] = useState(false)
   const [showEmails, setShowEmails] = useState(true)
+  const [showStarred, setShowStarred] = useState(false)
 
 
   const displayEmails = (email) => {
@@ -30,13 +31,28 @@ function App() {
   const getunreadEmails = () => {
     if (!hideRead) {
       setShowEmails(false)
+      setShowStarred(false)
       setHideRead(true)
     }
     else {
       setShowEmails(true)
       setHideRead(false)
+      setShowStarred(false)
     }
   
+  }
+
+  const getStarredEmails = () => {
+    if (!showStarred) {
+      setShowEmails(false)
+      setHideRead(false)
+      setShowStarred(true)
+    }
+    else {
+      setShowEmails(true)
+      setHideRead(false)
+      setShowStarred(false)
+    }
   }
 
   const toggleStarred = target => {
@@ -54,6 +70,7 @@ function App() {
   }
 
   const unreadEmails = emails.filter(email => !email.read)
+  const starredEmails = emails.filter(email => email.starred)
     
   const countUnread = () => {
     const unreadEmails = emails.filter(email => !email.read)
@@ -79,7 +96,7 @@ function App() {
           </li>
           <li
             className="item"
-            // onClick={() => {}}
+            onClick={getStarredEmails}
           >
             <span className="label">Starred</span>
             <span className="count">{countStarred()}</span>
@@ -100,6 +117,7 @@ function App() {
         <ul>
           {showEmails && emails.map((email) => displayEmails(email))}
           {hideRead && unreadEmails.map((email) => displayEmails(email))}
+          {showStarred && starredEmails.map((email) => displayEmails(email))}
         </ul>
       </main>
     </div>
