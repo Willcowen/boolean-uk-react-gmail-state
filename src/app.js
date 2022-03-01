@@ -14,8 +14,14 @@ function App() {
 
 
   const displayEmails = (email) => {
+    let emailClass = 'email '
+      if (email.read) {
+        emailClass += 'read'
+      } else {
+        emailClass += 'unread'
+      }
     return (
-      <li className="email" key={email.id}>
+      <li className={emailClass} key={email.id}>
         <div className="select">
           <input className="select-checkbox" type="checkbox" onChange={() => toggleRead(email)} checked={email.read}/>
         </div>
